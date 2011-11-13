@@ -1,0 +1,31 @@
+[mysqld]
+datadir=/var/lib/mysql
+default-storage-engine=innodb
+expire_logs_days=7
+local-infile=0
+log-bin=<%= hostname %>-bin
+log-warnings=2
+lower_case_table_names=1
+max_connections=600
+old_passwords=1
+query_cache_size = 67108864
+read_buffer_size = 1M
+safe-user-create
+skip-bdb
+skip-symbolic-links
+socket=/var/lib/mysql/mysql.sock
+sort_buffer_size = 4M
+sync_binlog=1
+table_cache = 256
+thread_cache_size = 16
+
+innodb-status-file
+innodb_buffer_pool_size = 67108864
+
+[mysql.server]
+basedir=/var/lib
+user=mysql
+
+[mysqld_safe]
+pid-file=/var/run/mysqld/mysqld.pid
+log-error=/var/lib/mysql/<%= hostname %>.err

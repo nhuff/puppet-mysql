@@ -1,0 +1,24 @@
+#!/bin/sh
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+DUMP_DIR=/var/local/mysql
+TSTAMP=`date +%Y.%m.%d-%H:%M`
+export PATH DUMP_DIR TSTAMP
+
+umask 077
+
+if test ! -d $DUMP_DIR ; then
+    mkdir $DUMP_DIR
+    chown mysql:mysql $DUMP_DIR
+    chmod o-rwx $DUMP_DIR
+fi
+
+cd $DUMP_DIR
+mysqldump --defaults-file=/root/.my.cnf -u root \
+--skip-opt --add-locks --all-databases --create-options \
+--extended-insert --flush-logs --master-data --quick --set-charset \
+--add-drop-table | grep -v 'lost+found' | nice -n 15 gzip --best -c > mysql_fulldump.$TSTAMP.sql.gz
+
+find $DUMP_DIR -name mysql_fulldump.\* -mtime +7 -exec rm -f {} \;
+
+exit 0

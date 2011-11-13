@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mysqldir='/var/lib/mysql'
+log='<%= hostname %>.err-old'
+old='/var/log/Old'
+yesterday=`date -d yesterday +%F`
+
+cp -a $mysqldir/$log $old/$yesterday/
+chgrp log $old/$yesterday/$log
+gzip $old/$yesterday/$log
