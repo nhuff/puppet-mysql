@@ -1,6 +1,5 @@
-define mysql::server_param($params) {
+define mysql::server_param($value) {
   $param = $name
-  $value = $params[$name]
 
   augeas{"mysql-$param":
     context => '/files/etc/my.cnf/target[. = "mysqld"]',
