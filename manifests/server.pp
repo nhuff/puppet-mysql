@@ -41,14 +41,6 @@ class mysql::server($config_params = {},$root_pass='') {
         require   => Package['mysql-server'],
     }
 	
-	file{'/usr/share/augeas/lenses/dist/mysql.aug':
-		ensure => file,
-		owner  => 'root',
-		group  => 'root',
-		mode   => '0644',
-		source => 'puppet:///modules/mysql/mysql.aug',
-	}
-
 	exec{'mysql-set-root':
 		command => "mysqladmin -u root password ${root_pass}",
 		path    => '/usr/bin',
