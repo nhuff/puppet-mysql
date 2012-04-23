@@ -1,0 +1,5 @@
+name 'mysql'
+version '0.1.0'
+summary 'Module to configure mysql'
+description 'Module to manage a mysql database'
+project_page 'https://github.com/nhuff/puppet-mysql'

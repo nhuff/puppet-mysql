@@ -1,11 +1,13 @@
-define mysql::server_param($params) {
-	$param = $name
-	$value = $params[$name]
+define mysql::server_param($value,$section='mysqld') {
+  $conf  = $mysql::server::conf_file 
+  $param = $name
 
-	augeas{"mysql-$param":
-		context => '/files/etc/my.cnf/mysqld',
-		changes => "set $param $value",
-		notify  => Service['mysqld'],
-		require => File['/usr/share/augeas/lenses/dist/mysql.aug']
-	}
+  augeas{"mysql-$param":
+    incl    => $conf,
+    lens    => 'mysql.lns',
+    context => "/files${conf}/target[. = '${section}']",
+    changes => "set $param $value",
+    notify  => Service['mysqld'],
+    require => File[$conf],
+  }
 }
