@@ -62,4 +62,7 @@ $manage_users = $mysql::params::manage_users
   }
 
   Mysql::Server_param<| |> ~> Service[$services]
+  Service[$services] -> Mysql_db<| |>
+  Service[$services] -> Mysql_user<| |>
+  Service[$services] -> Mysql_grant<| |>
 }
