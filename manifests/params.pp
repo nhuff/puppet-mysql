@@ -7,6 +7,7 @@ class mysql::params {
       $server_packages = 'mysql-server'
       $client_packages = 'mysql'
       $services        = 'mysqld'
+      $conf_file       = '/etc/my.cnf'
     }
     default: {
       crit("OS family '$::osfamily' not currently supported")

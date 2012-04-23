@@ -2,6 +2,7 @@ class mysql::server(
 $packages     = $mysql::params::server_packages,
 $services     = $mysql::params::services,
 $root_pass    = $mysql::params::root_pass,
+$conf_file    = $mysql::params::conf_file,
 $manage_dbs   = $mysql::params::manage_dbs,
 $manage_users = $mysql::params::manage_users
 ) inherits mysql::params {
@@ -38,7 +39,7 @@ $manage_users = $mysql::params::manage_users
     content => "[mysql]\nuser=root\npassword=${root_pass}\n"
   }
 
-  file{'/etc/my.cnf':
+  file{$conf_file:
     ensure => 'file',
     owner  => 'root',
     group  => 'root',
