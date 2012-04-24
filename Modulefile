@@ -1,5 +1,6 @@
 name 'mysql'
-version '0.1.0'
+version '0.2.0'
 summary 'Module to configure mysql'
 description 'Module to manage a mysql database'
+dependency 'puppetlabs/stdlib','>= 2.2.0'
 project_page 'https://github.com/nhuff/puppet-mysql'
