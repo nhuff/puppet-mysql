@@ -1,5 +1,5 @@
 define mysql::server_param($value,$section='mysqld') {
-  $conf  = $mysql::server::conf_file 
+  $conf  = $mysql::server::conf_file
   $param = $name
 
   augeas{"mysql-$param":

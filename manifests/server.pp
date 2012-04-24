@@ -22,7 +22,7 @@ $manage_users = $mysql::params::manage_users
     hasstatus => true,
     require   => Package[$packages],
   }
-  
+
   exec{'mysql-set-root':
     command => "mysqladmin -u root password ${root_pass}",
     path    => '/usr/bin',
@@ -35,7 +35,7 @@ $manage_users = $mysql::params::manage_users
     ensure  => file,
     owner   => 'root',
     group   => 'root',
-    mode    => '600',
+    mode    => '0600',
     content => "[mysql]\nuser=root\npassword=${root_pass}\n"
   }
 
@@ -48,9 +48,9 @@ $manage_users = $mysql::params::manage_users
 
   #make sure these databases and users don't get purged.
   mysql_db{['mysql','information_schema']: ensure => present}
-  mysql_user{['root@localhost','root@127.0.0.1']: 
+  mysql_user{['root@localhost','root@127.0.0.1']:
     ensure   => present,
-    password => $root_password,
+    password => $root_pass,
   }
 
   if $manage_dbs {
