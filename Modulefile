@@ -1,5 +1,5 @@
 name 'mysql'
-version '0.2.1'
+version '0.2.2'
 summary 'Module to configure mysql'
 description 'Module to manage a mysql database'
 dependency 'puppetlabs/stdlib','>= 2.2.0'
