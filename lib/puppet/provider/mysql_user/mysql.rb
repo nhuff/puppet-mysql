@@ -7,13 +7,13 @@ Puppet::Type.type(:mysql_user).provide(:mysql) do
 
 	def self.password_to_hash(password)
 		debug "mysql_user password_to_hash"
-		mysql('-NB','mysql','-e',"select password('#{password}');").chomp!
+		mysql('--defaults-file=/root/.my.cnf','-NB','mysql','-e',"select password('#{password}');").chomp!
 	end
 
 	def self.instances
 		debug "mysql_user instances"
 		users = []
-		us = mysql('-NB','mysql','-e','select user,host,password from user;')
+		us = mysql('--defaults-file=/root/.my.cnf','-NB','mysql','-e','select user,host,password from user;')
 		us.split("\n").each do |u|
 			username,hostname,pass = u.split("\t")
 			user_host = [username,hostname].join('@')
@@ -37,13 +37,13 @@ Puppet::Type.type(:mysql_user).provide(:mysql) do
 	def create
 		debug "mysql_user create"
 		@property_hash[:ensure] = :present
-		mysql('mysql','-e',"create user '%s' identified by '%s';" %
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e',"create user '%s' identified by '%s';" %
 				[@resource[:name].sub("@","'@'"),@resource[:password]])
 	end
 
 	def destroy
 		debug "mysql_user destroy"
-		mysql('mysql','-e',"drop user '%s'" % @resource[:name].sub("@", "'@'"))
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e',"drop user '%s'" % @resource[:name].sub("@", "'@'"))
 		@property_hash[:ensure] = :absent
 	end
 
@@ -63,7 +63,7 @@ Puppet::Type.type(:mysql_user).provide(:mysql) do
 
 	def password=(should)
 		hash = self.class.password_to_hash(should)
-		mysql('mysql','-e',"set password for '%s' = password('%s')"%
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e',"set password for '%s' = password('%s')"%
 			[ @resource[:name].sub("@", "'@'"), should ])
 		@property_hash[:password] = should
 		@property_hash[:password_hash] = hash
@@ -71,7 +71,7 @@ Puppet::Type.type(:mysql_user).provide(:mysql) do
 
 	def flush
 		debug "in flush"
-		mysql('mysql','-e','flush privileges;')
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e','flush privileges;')
 		@property_hash.clear
 	end
 	
