@@ -47,7 +47,7 @@ Puppet::Type.newtype(:mysql_grant) do
 
 		munge do |v|
 			v.gsub(' ','_')
-			symbolize(v)
+			v.to_sym
 		end
 #		newvalues(provider.db_privileges)
 	end
