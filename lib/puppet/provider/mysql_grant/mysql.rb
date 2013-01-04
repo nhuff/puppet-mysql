@@ -7,7 +7,7 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 	def self.instances
 		debug "instances"
 		grants = []
-		u_h_dbs = mysql('-NB','mysql','-e','select user,host,db from db')
+		u_h_dbs = mysql('--defaults-file=/root/.my.cnf','-NB','mysql','-e','select user,host,db from db')
 		debug "u_h_dbs:#{u_h_dbs}"
 		u_h_dbs.split("\n").each do |u_h_db|
 			user,host,db = u_h_db.split("\t")
@@ -38,14 +38,14 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 		name = split_name(@resource[:name])
 		debug "privs:#{@resource[:privileges]}"
 		grants = @resource[:privileges].collect{|x| x.to_s}.join(',')
-		mysql('mysql','-e',"grant %s on %s.* to '%s'@'%s';"%
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e',"grant %s on %s.* to '%s'@'%s';"%
 			[grants,name[:db],name[:user],name[:host]]
 		)
 	end
 
 	def destroy
 		name = split_name(@resource[:name])
-		mysql('mysql','-e',
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e',
 			"delete from db where user='%s' and host='%s' and db='%s';" %
 			[name[:user],name[:host],name[:db]]
 		)
@@ -53,7 +53,7 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 
 	def exists?
 		name = split_name(@resource[:name])
-		count = mysql('-NB','mysql','-e',
+		count = mysql('--defaults-file=/root/.my.cnf','-NB','mysql','-e',
 			"select count(1) from db where user='%s' and host='%s' and db='%s'"%
 			[name[:user],name[:host],name[:db]]
 		).chomp
@@ -78,7 +78,7 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 		unless grant_set.empty?
 			grants = grant_set.to_a.collect{|x| x.to_s}.join(',')
 			debug "grants: #{grants}"
-			mysql('mysql','-e',"grant %s on %s.* to '%s'@'%s'"%
+			mysql('--defaults-file=/root/.my.cnf','mysql','-e',"grant %s on %s.* to '%s'@'%s'"%
 				[grants,name[:db],name[:user],name[:host]]
 			)
 		end
@@ -86,7 +86,7 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 		unless revoke_set.empty?
 			revokes = revoke_set.to_a.collect{|x| x.to_s}.join(',')
 			debug "revokes: #{revokes}"
-			mysql('mysql','-e',"revoke %s on %s.* from '%s'@'%s'"%
+			mysql('--defaults-file=/root/.my.cnf','mysql','-e',"revoke %s on %s.* from '%s'@'%s'"%
 				[revokes,name[:db],name[:user],name[:host]]
 			)
 		end
@@ -108,7 +108,7 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 			string+'_priv'
 		end.join(',')
 
-		privs = mysql('-NB','mysql','-e',
+		privs = mysql('--defaults-file=/root/.my.cnf','-NB','mysql','-e',
 			"select %s from db where user='%s' and db='%s' and host='%s';"%
 			[privs_def,user,database,host]).chomp.split("\t")
 
@@ -123,6 +123,6 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 	end	
 
 	def flush
-		mysql('mysql','-e','flush privileges;')
+		mysql('--defaults-file=/root/.my.cnf','mysql','-e','flush privileges;')
 	end
 end
